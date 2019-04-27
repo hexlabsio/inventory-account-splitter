@@ -5,9 +5,10 @@ import io.kloudformation.StackBuilder
 
 class Stack: StackBuilder {
     override fun KloudFormation.create(args: List<String>) {
-        serverless("account-splitter", "dev", +"hexlabs-deployments") {
+        val codeLocation = args.first()
+        serverless("account-splitter", "live", +"hexlabs-deployments") {
             globalRole { roleName("inventory-account-splitter-role") }
-            serverlessFunction("account-splitter", +args.first(),+"handler", +"go1.x"){
+            serverlessFunction("account-splitter", +codeLocation,+"handler", +"go1.x"){
                 http(cors = true) {
                     httpBasePathMapping(+"api.hexlabs.io",+"inventory")
                     path("/") { Method.GET(); Method.POST() }
