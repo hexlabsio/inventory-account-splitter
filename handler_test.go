@@ -1,13 +1,16 @@
 package main
 
 import (
-	"context"
+	"fmt"
 	"testing"
+
+	"github.com/aws/aws-lambda-go/events"
 )
 
 func TestAbs(t *testing.T) {
-	_, err := HandleRequest(context.TODO())
+	response, err := HandleRequest(events.APIGatewayProxyRequest{Body: ""})
 	if err != nil {
 		t.Error(err)
 	}
+	fmt.Println(response)
 }

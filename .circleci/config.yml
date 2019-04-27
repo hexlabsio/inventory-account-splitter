@@ -13,7 +13,11 @@ jobs:
           keys:
           - v1-pkg-cache
 
-      - run: go get github.com/aws/aws-lambda-go/lambda
+      - run: 
+          name: Go Get
+          command: |
+            go get github.com/aws/aws-lambda-go/lambda
+            go get github.com/aws/aws-lambda-go/events
 
       - save_cache:
           key: v1-pkg-cache
@@ -33,7 +37,7 @@ jobs:
           command:  curl -sSL install.kloudformation.hexlabs.io | bash -s -- -local
 
       - run:
-          name: Transpile Stack
+          name: Deploy Stack
           command:  ./kloudformation.sh deploy -stack-name inventory-account-splitter -m serverless@0.1.10 -bucket hexlabs-deployments -location handler.zip -output outputs.properties
 
       - store_artifacts:

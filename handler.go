@@ -1,9 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
@@ -32,14 +32,14 @@ var awsregions = [18]region{
 	region{name: "sa-east-1", label: "South America (São Paulo)"},
 }
 
-//HandleRequest abcd
-func HandleRequest(ctx context.Context) (string, error) {
+//HandleRequest Handles API Gateway Request
+func HandleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	output := ""
 	for i := 0; i < len(awsregions); i++ {
 		fmt.Println(awsregions[i].name)
 		output += awsregions[i].name
 	}
-	return output, nil
+	return events.APIGatewayProxyResponse{Body: output, StatusCode: 200}, nil
 }
 
 func main() {
