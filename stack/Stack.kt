@@ -9,7 +9,7 @@ class Stack: StackBuilder {
             globalRole { roleName("inventory-account-splitter-role") }
             serverlessFunction("account-splitter", +args.first(),+"handler", +"go1.x"){
                 http(cors = true) {
-                    path("/") { Method.POST() }
+                    path("/") { Method.GET(); Method.POST() }
                 }
             }
         }
