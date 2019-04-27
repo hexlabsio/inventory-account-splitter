@@ -35,6 +35,10 @@ jobs:
       - run:
           name: Download KloudFormation
           command:  curl -sSL install.kloudformation.hexlabs.io | bash -s -- -local
+      
+      - restore_cache:
+          keys:
+            - kloudformation-{{ checksum "kloudformation.sh" }}
 
       - run:
           name: Deploy Stack
@@ -45,3 +49,8 @@ jobs:
 
       - store_artifacts:
           path: outputs.properties
+
+      - save_cache:
+          paths:
+            - ~/.kloudformation
+          key: kloudformation-{{ checksum "kloudformation.sh" }}
