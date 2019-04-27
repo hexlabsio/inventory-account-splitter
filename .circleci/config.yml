@@ -2,42 +2,43 @@ version: 2
 jobs:
   build:
     docker:
-    - image: circleci/golang:1.12
+      - image: circleci/golang:1.12
+
     working_directory: /go/src/github.com/hexlabsio/inventory-account-splitter
 
     steps:
-    - checkout
-    - run: mkdir -p $TEST_RESULTS # create the test results directory
+      - checkout
+      - run: mkdir -p $TEST_RESULTS # create the test results directory
 
-    - restore_cache:
-        keys:
-        - v1-pkg-cache
+      - restore_cache:
+          keys:
+          - v1-pkg-cache
 
-    - run: go get github.com/aws/aws-lambda-go/lambda
+      - run: go get github.com/aws/aws-lambda-go/lambda
 
-    - save_cache:
-        key: v1-pkg-cache
-        paths:
-        - "/go/pkg"
+      - save_cache:
+          key: v1-pkg-cache
+          paths:
+          - "/go/pkg"
 
-    - run:
-        name: Test
-        command: go test
+      - run:
+          name: Test
+          command: go test
 
-    - run:
-        name: Build
-        command: GOOS=linux go build handler.go && zip handler.zip ./handler
+      - run:
+          name: Build
+          command: GOOS=linux go build handler.go && zip handler.zip ./handler
 
-  - run:
-      name: Download KloudFormation
-      command:  curl -sSL install.kloudformation.hexlabs.io | bash -s -- -local
+      - run:
+          name: Download KloudFormation
+          command:  curl -sSL install.kloudformation.hexlabs.io | bash -s -- -local
 
-  - run:
-      name: Transpile Stack
-      command:  ./kloudformation.sh deploy -stack-name inventory-account-splitter -m serverless@0.1.10 -bucket hexlabs-deployments -location handler.zip -output outputs.properties
+      - run:
+          name: Transpile Stack
+          command:  ./kloudformation.sh deploy -stack-name inventory-account-splitter -m serverless@0.1.10 -bucket hexlabs-deployments -location handler.zip -output outputs.properties
 
-  - store_artifacts:
-      path: template.yml
+      - store_artifacts:
+          path: template.yml
 
-  - store_artifacts:
-      path: outputs.properties
+      - store_artifacts:
+          path: outputs.properties
