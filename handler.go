@@ -36,17 +36,19 @@ var awsRegions = [18]region{
 
 //HandleRequest Handles API Gateway Request
 func HandleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	fmt.Println(request.RequestContext)
 	if request.HTTPMethod == "GET" {
 		outputJSON, _ := json.Marshal(awsRegions)
 		return events.APIGatewayProxyResponse{Body: string(outputJSON[:]), StatusCode: 200}, nil
 	}
-
-	output := ""
-	for i := 0; i < len(awsRegions); i++ {
-		fmt.Println(awsRegions[i].Name)
-		output += awsRegions[i].Name
+	accountID, exists := request.PathParameters["accountId"]
+	if !exists {
+		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
 	}
-	return events.APIGatewayProxyResponse{Body: "Accepted", StatusCode: 202}, nil
+	for i := 0; i < len(awsRegions); i++ {
+		fmt.Println("Calling https://api.hexlabs.io/inventory/account/" + accountID + "/region/" + awsRegions[i].Name)
+	}
+	return events.APIGatewayProxyResponse{StatusCode: 202}, nil
 }
 
 func main() {

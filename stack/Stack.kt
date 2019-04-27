@@ -1,4 +1,4 @@
-import io.hexlabs.kloudformation.module.serverless.Method
+import io.hexlabs.kloudformation.module.serverless.Method.*
 import io.hexlabs.kloudformation.module.serverless.serverless
 import io.kloudformation.KloudFormation
 import io.kloudformation.StackBuilder
@@ -11,7 +11,7 @@ class Stack: StackBuilder {
             serverlessFunction("account-splitter", +codeLocation,+"handler", +"go1.x"){
                 http(cors = true) {
                     httpBasePathMapping(+"api.hexlabs.io",+"inventory")
-                    path("/") { Method.GET(); Method.POST() }
+                    path({ "account" / { "accountId" } }) { GET(); POST() }
                 }
             }
         }
