@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
+
+	"github.com/aws/aws-lambda-go/lambda"
 )
 
 type region struct {
@@ -29,9 +32,16 @@ var awsregions = [18]region{
 	region{name: "sa-east-1", label: "South America (São Paulo)"},
 }
 
-func main() {
+//HandleRequest abcd
+func HandleRequest(ctx context.Context) (string, error) {
+	output := ""
 	for i := 0; i < len(awsregions); i++ {
 		fmt.Println(awsregions[i].name)
+		output += awsregions[i].name
 	}
+	return output, nil
+}
 
+func main() {
+	lambda.Start(HandleRequest)
 }
